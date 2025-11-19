@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Student Management</title>
+    <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="row justify-content-center min-vh-100 align-items-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                        <h2 class="card-title">Create Account</h2>
+                        <p class="text-muted">Join Student Management System</p>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <div th:if="${param.registered}" class="alert alert-success alert-dismissible fade show">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Registration successful! Please login.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <form th:action="@{/register}" th:object="${user}" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName"
+                                           th:field="*{firstName}" required>
+                                    <div th:if="${#fields.hasErrors('firstName')}" class="text-danger">
+                                        <small th:errors="*{firstName}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName"
+                                           th:field="*{lastName}" required>
+                                    <div th:if="${#fields.hasErrors('lastName')}" class="text-danger">
+                                        <small th:errors="*{lastName}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email"
+                                   th:field="*{email}" required>
+                            <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                                <small th:errors="*{email}"></small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password"
+                                   th:field="*{password}" required>
+                            <div th:if="${#fields.hasErrors('password')}" class="text-danger">
+                                <small th:errors="*{password}"></small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account?
+                            <a th:href="@{/login}" class="text-decoration-none">Sign In</a>
+                        </p>
+                    </div>
+
+                    <!-- Demo credentials -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6 class="text-center mb-2">Demo Credentials:</h6>
+                        <div class="small text-center">
+                            <div><strong>Admin:</strong> admin@student.com / admin123</div>
+                            <div><strong>User:</strong> user@student.com / user123</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

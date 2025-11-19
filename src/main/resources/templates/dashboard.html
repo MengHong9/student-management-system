@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Student Management</title>
+    <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-graduation-cap"></i> Student Management
+        </a>
+        <div class="navbar-nav ms-auto">
+                <span class="navbar-text text-white me-3">
+                    Welcome, <span sec:authentication="name">User</span>
+                </span>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="list-group">
+                <a th:href="@{/dashboard}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a th:href="@{/student/list}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users me-2"></i>Manage Students
+                </a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/users}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-cog me-2"></i>Manage Users
+                </a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-chart-bar me-2"></i>Admin Dashboard
+                </a>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">Quick Stats</h6>
+                    <div class="mb-2">
+                        <small class="text-muted">Your Students:</small>
+                        <div class="fw-bold" th:text="${studentCount != null ? studentCount : 0}">0</div>
+                    </div>
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <small class="text-muted">Total Students:</small>
+                        <div class="fw-bold" th:text="${totalStudents != null ? totalStudents : 0}">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dashboard</h2>
+                <a th:href="@{/student/add}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Add Student
+                </a>
+            </div>
+
+            <!-- Welcome Card -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Welcome to Student Management System</h4>
+                    <p class="card-text">
+                            <span sec:authorize="hasRole('ADMIN')">
+                                You are logged in as Administrator. You can manage both users and students.
+                            </span>
+                        <span sec:authorize="hasRole('USER')">
+                                You are logged in as User. You can manage your students.
+                            </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Students</h5>
+                                    <p class="card-text">Manage student records</p>
+                                </div>
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                            <a th:href="@{/student/list}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')" class="col-md-6">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Users</h5>
+                                    <p class="card-text">Manage system users</p>
+                                </div>
+                                <i class="fas fa-user-cog fa-2x"></i>
+                            </div>
+                            <a th:href="@{/admin/users}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Students -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Students</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${recentStudents == null || #lists.isEmpty(recentStudents)}" class="text-center text-muted py-4">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <p>No students found. <a th:href="@{/student/add}">Add your first student</a></p>
+                    </div>
+                    <div th:if="${recentStudents != null && !#lists.isEmpty(recentStudents)}" class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="student : ${recentStudents}">
+                                <td th:text="${student.fullName}">Student Name</td>
+                                <td th:text="${student.email}">student@example.com</td>
+                                <td th:text="${student.course}">Course</td>
+                                <td>
+<!--                                    <a th:href="@{/student/view/{id}(id=${student.id})}"-->
+<!--                                       class="btn btn-sm btn-outline-primary">-->
+<!--                                        <i class="fas fa-eye"></i>-->
+<!--                                    </a>-->
+                                    <a th:href="@{/student/edit/{id}(id=${student.id})}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

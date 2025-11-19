@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${student.id != null}">Edit Student</title>
+    <title th:unless="${student.id != null}">Add Student</title>
+    <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-graduation-cap"></i> Student Management
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a th:href="@{/dashboard}" class="btn btn-outline-light btn-sm me-2">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a th:href="@{/student/list}" class="btn btn-outline-light btn-sm me-2">
+                <i class="fas fa-users"></i> Students
+            </a>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0" th:if="${student.id != null}">Edit Student</h4>
+                    <h4 class="card-title mb-0" th:unless="${student.id != null}">Add New Student</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Success/Error Messages -->
+                    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Student saved successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span th:if="${errorMessage}" th:text="${errorMessage}">Error saving student!</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Add Student Form -->
+                    <form th:if="${student.id == null}" th:action="@{/student/add}" th:object="${student}" method="post">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="addFirstName" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="addFirstName"
+                                           th:field="*{firstName}" required>
+                                    <div th:if="${#fields.hasErrors('firstName')}" class="text-danger">
+                                        <small th:errors="*{firstName}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="addLastName" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="addLastName"
+                                           th:field="*{lastName}" required>
+                                    <div th:if="${#fields.hasErrors('lastName')}" class="text-danger">
+                                        <small th:errors="*{lastName}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="addEmail" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="addEmail"
+                                           th:field="*{email}">
+                                    <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                                        <small th:errors="*{email}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="addPhone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="addPhone"
+                                           th:field="*{phone}" placeholder="10-digit number">
+                                    <div th:if="${#fields.hasErrors('phone')}" class="text-danger">
+                                        <small th:errors="*{phone}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="addAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="addAddress" th:field="*{address}"
+                                      rows="3" placeholder="Enter student's address"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="addDateOfBirth" class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" id="addDateOfBirth"
+                                           th:field="*{dateOfBirth}" required>
+                                    <div th:if="${#fields.hasErrors('dateOfBirth')}" class="text-danger">
+                                        <small th:errors="*{dateOfBirth}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="addGender" class="form-label">Gender</label>
+                                    <select class="form-control" id="addGender" th:field="*{gender}">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="addCourse" class="form-label">Course</label>
+                                    <input type="text" class="form-control" id="addCourse"
+                                           th:field="*{course}" placeholder="e.g., Computer Science">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="addDepartment" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="addDepartment"
+                                   th:field="*{department}" placeholder="e.g., Engineering">
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/student/list}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Add Student
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Edit Student Form -->
+                    <form th:if="${student.id != null}" th:action="@{/student/edit/{id}(id=${student.id})}" th:object="${student}" method="post">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editFirstName" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="editFirstName"
+                                           th:field="*{firstName}" required>
+                                    <div th:if="${#fields.hasErrors('firstName')}" class="text-danger">
+                                        <small th:errors="*{firstName}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editLastName" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="editLastName"
+                                           th:field="*{lastName}" required>
+                                    <div th:if="${#fields.hasErrors('lastName')}" class="text-danger">
+                                        <small th:errors="*{lastName}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email"
+                                           th:field="*{email}">
+                                    <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                                        <small th:errors="*{email}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone"
+                                           th:field="*{phone}"
+                                           placeholder="Enter 8-10 digit phone number"
+                                           minlength="8"
+                                           maxlength="10"
+                                           pattern="[0-9]{8,10}"
+                                           title="Please enter 8 to 10 digits">
+                                    <div class="form-text">Enter 8 to 10 digit phone number (numbers only)</div>
+                                    <div th:if="${#fields.hasErrors('phone')}" class="text-danger">
+                                        <small th:errors="*{phone}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="editAddress" th:field="*{address}"
+                                      rows="3" placeholder="Enter student's address"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="editDateOfBirth" class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" id="editDateOfBirth"
+                                           th:field="*{dateOfBirth}" required>
+                                    <div th:if="${#fields.hasErrors('dateOfBirth')}" class="text-danger">
+                                        <small th:errors="*{dateOfBirth}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="editGender" class="form-label">Gender</label>
+                                    <select class="form-control" id="editGender" th:field="*{gender}">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="editCourse" class="form-label">Course</label>
+                                    <input type="text" class="form-control" id="editCourse"
+                                           th:field="*{course}" placeholder="e.g., Computer Science">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editDepartment" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="editDepartment"
+                                   th:field="*{department}" placeholder="e.g., Engineering">
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/student/list}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Update Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

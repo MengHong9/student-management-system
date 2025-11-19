@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Students - Student Management</title>
+    <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-graduation-cap"></i> Student Management
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a th:href="@{/dashboard}" class="btn btn-outline-light btn-sm me-2">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Student Management</h2>
+        <a th:href="@{/student/add}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Add New Student
+        </a>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form th:action="@{/student/list}" method="get" class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="keyword" class="form-control"
+                               placeholder="Search students by name or email..."
+                               th:value="${param.keyword}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <a th:href="@{/student/list}" class="btn btn-outline-secondary">
+                        <i class="fas fa-refresh"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-users me-2"></i>Students List
+                <span class="badge bg-primary ms-2" th:text="${students != null ? #lists.size(students) : 0}">0</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${students == null || #lists.isEmpty(students)}" class="text-center text-muted py-5">
+                <i class="fas fa-users fa-4x mb-3"></i>
+                <h4>No Students Found</h4>
+                <p class="mb-3">Get started by adding your first student</p>
+                <a th:href="@{/student/add}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Add Student
+                </a>
+            </div>
+
+            <div th:if="${students != null && !#lists.isEmpty(students)}" class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Course</th>
+                        <th>Department</th>
+                        <th>Age</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="student : ${students}">
+                        <td th:text="${student.id}">1</td>
+                        <td>
+                            <strong th:text="${student.fullName}">Student Name</strong>
+                        </td>
+                        <td th:text="${student.email}">student@example.com</td>
+                        <td th:text="${student.phone}">1234567890</td>
+                        <td>
+                            <span class="badge bg-info" th:text="${student.course}">Course</span>
+                        </td>
+                        <td th:text="${student.department}">Department</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${student.age}">20</span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a th:href="@{/student/edit/{id}(id=${student.id})}"
+                                   class="btn btn-outline-secondary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/student/delete/{id}(id=${student.id})}"
+                                   class="btn btn-outline-danger" title="Delete"
+                                   onclick="return confirm('Are you sure you want to delete this student?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
